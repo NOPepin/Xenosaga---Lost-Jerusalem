@@ -5,31 +5,22 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
 	[SerializeField] CharacterController cc;
+	[SerializeField] Transform origineRayCast;
 	[SerializeField] scriptCamera maCamera;
+	[SerializeField] GereSprites gestionSprites;
 	[SerializeField] SpriteRenderer sprite;
-	[SerializeField] private float vitesseMarche = 0.3f, vitesseRun = 0.6f, animationFrameRate;
+	[SerializeField] private float vitesseMarche = 0.3f, vitesseRun = 0.6f, vitesseGrimpe, animationFrameRate;
 	[SerializeField] private int nbLandingFrames;
-
-	[SerializeField] List<Sprite> listeIdleSpriteN, listeIdleSpriteNE, listeIdleSpriteE, listeIdleSpriteSE, 
-								  listeIdleSpriteS, listeIdleSpriteSO, listeIdleSpriteO, listeIdleSpriteNO;
-	[SerializeField] List<Sprite> listeWalkSpriteN, listeWalkSpriteNE, listeWalkSpriteE, listeWalkSpriteSE,
-								  listeWalkSpriteS, listeWalkSpriteSO, listeWalkSpriteO, listeWalkSpriteNO;
-	[SerializeField] List<Sprite> listeRunSpriteN, listeRunSpriteNE, listeRunSpriteE, listeRunSpriteSE,
-								  listeRunSpriteS, listeRunSpriteSO, listeRunSpriteO, listeRunSpriteNO;
-	[SerializeField] List<Sprite> listeJumpSpriteN, listeJumpSpriteNE, listeJumpSpriteE, listeJumpSpriteSE,
-								  listeJumpSpriteS, listeJumpSpriteSO, listeJumpSpriteO, listeJumpSpriteNO;
-	[SerializeField] List<Sprite> listeLandSpriteN, listeLandSpriteNE, listeLandSpriteE, listeLandSpriteSE,
-								  listeLandSpriteS, listeLandSpriteSO, listeLandSpriteO, listeLandSpriteNO;
-	[SerializeField] List<Sprite> listeClimbSpriteN, listeClimbSpriteNE, listeClimbSpriteE, listeClimbSpriteSE,
-								  listeClimbSpriteS, listeClimbSpriteSO, listeClimbSpriteO, listeClimbSpriteNO;
 
 	private Vector3 playerVelocity, direction;
 	private bool isRunning = false, isGrounded, wasGrounded = false, isLanding = false, isClimbing = false;
 	private float jumpHeight = 1.0f;
 	private float gravityValue = -9.81f;
-	
+
+	private RaycastHit pointGrimpe;
+
 	private float animationStartTime = 0f;
-	private string currentAnimationName = "Idle";
+	private string currentAnimationName = "Idle", climbingDirection = "Idle";
 
 	// Start is called before the first frame update
 	void Start()
@@ -44,6 +35,14 @@ public class PlayerScript : MonoBehaviour
 
 		if (!DialogueManager.GetInstance().cutsceneIsPlaying)
 		{
+			// on vérifie si le joueur veux commencer à grimper
+			if (!this.isClimbing && Input.GetButtonDown("Submit") && Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 2f, LayerMask.GetMask("Echelle")))
+			{
+				Debug.Log(this.pointGrimpe.point);
+				this.isClimbing = true;
+			}
+
+			// on s'occupe du mouvement
 			if(!this.isClimbing)
 			{
 				this.Mouvement();
@@ -105,7 +104,7 @@ public class PlayerScript : MonoBehaviour
 		{
 			Quaternion directionRotation = Quaternion.LookRotation(direction, Vector3.up);
 
-			this.transform.rotation = directionRotation;
+			this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, directionRotation, 1.5f);
 		}
 
 		isRunning = !Input.GetKey(KeyCode.LeftShift);
@@ -121,7 +120,7 @@ public class PlayerScript : MonoBehaviour
 
 		if (deplacement != Vector3.zero)
 		{
-			cc.Move(deplacement * vitesse);
+			cc.Move(deplacement * vitesse * Time.deltaTime);
 		}
 	}
 
@@ -140,258 +139,69 @@ public class PlayerScript : MonoBehaviour
 			return;
 		}
 
-		if (!Physics.CheckSphere(this.transform.position, 1.1f, LayerMask.GetMask("Echelle")))
+		if (!Physics.Raycast(this.origineRayCast.position, this.transform.forward, out this.pointGrimpe, 2f, LayerMask.GetMask("Echelle")) || Input.GetButtonDown("Cancel"))
 		{
 			this.isClimbing = false;
 			return;
 		}
 
+		Physics.Raycast(this.origineRayCast.position, this.transform.forward, out this.pointGrimpe, 2f, LayerMask.GetMask("Echelle"));
 
+		Vector3 directionEchelle = this.pointGrimpe.point - this.transform.position;
+		this.transform.rotation = Quaternion.LookRotation(directionEchelle, Vector3.up);
+
+		/*Vector3 placementInitialGrimpe = this.pointGrimpe.point;
+		placementInitialGrimpe -= this.transform.forward.normalized;
+		this.transform.position = placementInitialGrimpe;*/
+
+		this.transform.position = this.pointGrimpe.point;
+
+
+		float horizontal = Input.GetAxis("Horizontal");
+		float vertical = Input.GetAxis("Vertical");
+
+		if((horizontal > vertical && vertical >= 0) || (horizontal < vertical && vertical <= 0))
+		{
+			vertical = 0;
+		}
+		else
+		{
+			horizontal = 0;
+		}
+
+		Vector3 deplacement = (this.transform.up * vertical) + (this.transform.right * horizontal);
+
+		this.cc.Move(deplacement * vitesseGrimpe * Time.deltaTime);
+
+		if(vertical > 0)
+		{
+			this.climbingDirection = "Haut";
+		}
+
+		if (vertical < 0)
+		{
+			this.climbingDirection = "Bas";
+		}
+
+		if (horizontal > 0)
+		{
+			this.climbingDirection = "Droite";
+		}
+
+		if (horizontal < 0)
+		{
+			this.climbingDirection = "Gauche";
+		}
+
+		if (vertical == 0 && horizontal == 0)
+		{
+			this.climbingDirection = "Idle";
+		}
 	}
 
 	/********************
 	 * Animation Sprite *
 	 ********************/
-
-	private List<Sprite> getIdleSpriteDirection()
-	{
-		List<Sprite> listeRet = null;                                                                          // j'ajoute 360 pour éviter d'avoir un nombre négatif
-		int compareRotations = (int)(this.transform.rotation.eulerAngles.y - this.maCamera.transform.rotation.eulerAngles.y + 360) % 360;
-
-		if (compareRotations > 337 || compareRotations <= 22) // N : centre = 0 | 360
-		{
-			listeRet = listeIdleSpriteN;
-		}
-
-		if (compareRotations > 22 && compareRotations <= 67) // NE : centre = 45
-		{
-			listeRet = listeIdleSpriteNE;
-		}
-
-		if (compareRotations > 67 && compareRotations <= 112) // E : centre = 90
-		{
-			listeRet = listeIdleSpriteE;
-		}
-
-		if (compareRotations > 112 && compareRotations <= 157) // SE : centre = 135
-		{
-			listeRet = listeIdleSpriteSE;
-		}
-
-		if (compareRotations > 157 && compareRotations <= 202) // S : centre = 180
-		{
-			listeRet = listeIdleSpriteS;
-		}
-
-		if (compareRotations > 202 && compareRotations <= 247) // SO : centre = 225
-		{
-			listeRet = listeIdleSpriteSO;
-		}
-
-		if (compareRotations > 247 && compareRotations <= 292) // O : centre = 270
-		{
-			listeRet = listeIdleSpriteO;
-		}
-
-		if (compareRotations > 292 && compareRotations <= 337) // NO : centre = 315
-		{
-			listeRet = listeIdleSpriteNO;
-		}
-
-		return listeRet;
-	}
-
-	private List<Sprite> getWalkSpriteDirection()
-	{
-		List<Sprite> listeRet = null;
-		int compareRotations = (int)(this.transform.rotation.eulerAngles.y - this.maCamera.transform.rotation.eulerAngles.y + 360) % 360;
-
-		if (compareRotations > 337 || compareRotations <= 22) // N : centre = 0 | 360
-		{
-			listeRet = listeWalkSpriteN;
-		}
-
-		if (compareRotations > 22 && compareRotations <= 67) // NE : centre = 45
-		{
-			listeRet = listeWalkSpriteNE;
-		}
-
-		if (compareRotations > 67 && compareRotations <= 112) // E : centre = 90
-		{
-			listeRet = listeWalkSpriteE;
-		}
-
-		if (compareRotations > 112 && compareRotations <= 157) // SE : centre = 135
-		{
-			listeRet = listeWalkSpriteSE;
-		}
-
-		if (compareRotations > 157 && compareRotations <= 202) // S : centre = 180
-		{
-			listeRet = listeWalkSpriteS;
-		}
-
-		if (compareRotations > 202 && compareRotations <= 247) // SO : centre = 225
-		{
-			listeRet = listeWalkSpriteSO;
-		}
-
-		if (compareRotations > 247 && compareRotations <= 292) // O : centre = 270
-		{
-			listeRet = listeWalkSpriteO;
-		}
-
-		if (compareRotations > 292 && compareRotations <= 337) // NO : centre = 315
-		{
-			listeRet = listeWalkSpriteNO;
-		}
-
-		return listeRet;
-	}
-
-	private List<Sprite> getRunSpriteDirection()
-	{
-		List<Sprite> listeRet = null;
-		int compareRotations = (int)(this.transform.rotation.eulerAngles.y - this.maCamera.transform.rotation.eulerAngles.y + 360) % 360;
-
-		if (compareRotations > 337 || compareRotations <= 22) // N : centre = 0 | 360
-		{
-			listeRet = listeRunSpriteN;
-		}
-
-		if (compareRotations > 22 && compareRotations <= 67) // NE : centre = 45
-		{
-			listeRet = listeRunSpriteNE;
-		}
-
-		if (compareRotations > 67 && compareRotations <= 112) // E : centre = 90
-		{
-			listeRet = listeRunSpriteE;
-		}
-
-		if (compareRotations > 112 && compareRotations <= 157) // SE : centre = 135
-		{
-			listeRet = listeRunSpriteSE;
-		}
-
-		if (compareRotations > 157 && compareRotations <= 202) // S : centre = 180
-		{
-			listeRet = listeRunSpriteS;
-		}
-
-		if (compareRotations > 202 && compareRotations <= 247) // SO : centre = 225
-		{
-			listeRet = listeRunSpriteSO;
-		}
-
-		if (compareRotations > 247 && compareRotations <= 292) // O : centre = 270
-		{
-			listeRet = listeRunSpriteO;
-		}
-
-		if (compareRotations > 292 && compareRotations <= 337) // NO : centre = 315
-		{
-			listeRet = listeRunSpriteNO;
-		}
-
-		return listeRet;
-	}
-
-	private List<Sprite> getJumpSpriteDirection()
-	{
-		List<Sprite> listeRet = null;
-		int compareRotations = (int)(this.transform.rotation.eulerAngles.y - this.maCamera.transform.rotation.eulerAngles.y + 360) % 360;
-
-		if (compareRotations > 337 || compareRotations <= 22) // N : centre = 0 | 360
-		{
-			listeRet = listeJumpSpriteN;
-		}
-
-		if (compareRotations > 22 && compareRotations <= 67) // NE : centre = 45
-		{
-			listeRet = listeJumpSpriteNE;
-		}
-
-		if (compareRotations > 67 && compareRotations <= 112) // E : centre = 90
-		{
-			listeRet = listeJumpSpriteE;
-		}
-
-		if (compareRotations > 112 && compareRotations <= 157) // SE : centre = 135
-		{
-			listeRet = listeJumpSpriteSE;
-		}
-
-		if (compareRotations > 157 && compareRotations <= 202) // S : centre = 180
-		{
-			listeRet = listeJumpSpriteS;
-		}
-
-		if (compareRotations > 202 && compareRotations <= 247) // SO : centre = 225
-		{
-			listeRet = listeJumpSpriteSO;
-		}
-
-		if (compareRotations > 247 && compareRotations <= 292) // O : centre = 270
-		{
-			listeRet = listeJumpSpriteO;
-		}
-
-		if (compareRotations > 292 && compareRotations <= 337) // NO : centre = 315
-		{
-			listeRet = listeJumpSpriteNO;
-		}
-
-		return listeRet;
-	}
-
-	private List<Sprite> getLandSpriteDirection()
-	{
-		List<Sprite> listeRet = null;
-		float compareRotations = ((this.transform.rotation.eulerAngles.y - this.maCamera.transform.rotation.eulerAngles.y) % 360 + 360) % 360;
-
-		if (compareRotations > 337 || compareRotations <= 22) // N : centre = 0 | 360
-		{
-			listeRet = listeLandSpriteN;
-		}
-
-		if (compareRotations > 22 && compareRotations <= 67) // NE : centre = 45
-		{
-			listeRet = listeLandSpriteNE;
-		}
-
-		if (compareRotations > 67 && compareRotations <= 112) // E : centre = 90
-		{
-			listeRet = listeLandSpriteE;
-		}
-
-		if (compareRotations > 112 && compareRotations <= 157) // SE : centre = 135
-		{
-			listeRet = listeLandSpriteSE;
-		}
-
-		if (compareRotations > 157 && compareRotations <= 202) // S : centre = 180
-		{
-			listeRet = listeLandSpriteS;
-		}
-
-		if (compareRotations > 202 && compareRotations <= 247) // SO : centre = 225
-		{
-			listeRet = listeLandSpriteSO;
-		}
-
-		if (compareRotations > 247 && compareRotations <= 292) // O : centre = 270
-		{
-			listeRet = listeLandSpriteO;
-		}
-
-		if (compareRotations > 292 && compareRotations <= 337) // NO : centre = 315
-		{
-			listeRet = listeLandSpriteNO;
-		}
-
-		return listeRet;
-	}
 
 	void gereAnimation()
 	{
@@ -399,39 +209,68 @@ public class PlayerScript : MonoBehaviour
 		string animationName;
 		float animationTime;
 
-		if (this.isGrounded)
+		if (!this.isClimbing)
 		{
-			if(this.isLanding || currentAnimationName == "Land")
+			if (this.isGrounded)
 			{
-				spriteDirection = getLandSpriteDirection();
-				animationName = "Land";
-			}
-			else
-			{
-				if (direction != Vector3.zero)
+				if (this.isLanding || currentAnimationName == "Land")
 				{
-					if (isRunning)
-					{
-						spriteDirection = getRunSpriteDirection();
-						animationName = "Run";
-					}
-					else
-					{
-						spriteDirection = getWalkSpriteDirection();
-						animationName = "Walk";
-					}
+					spriteDirection = this.gestionSprites.getLandSpriteDirection();
+					animationName = "Land";
 				}
 				else
 				{
-					spriteDirection = getIdleSpriteDirection();
-					animationName = "Idle";
+					if (direction != Vector3.zero)
+					{
+						if (isRunning)
+						{
+							spriteDirection = this.gestionSprites.getRunSpriteDirection();
+							animationName = "Run";
+						}
+						else
+						{
+							spriteDirection = this.gestionSprites.getWalkSpriteDirection();
+							animationName = "Walk";
+						}
+					}
+					else
+					{
+						spriteDirection = this.gestionSprites.getIdleSpriteDirection();
+						animationName = "Idle";
+					}
 				}
+			}
+			else
+			{
+				spriteDirection = this.gestionSprites.getJumpSpriteDirection();
+				animationName = "Jump";
 			}
 		}
 		else
 		{
-			spriteDirection = getJumpSpriteDirection();
-			animationName = "Jump";
+			animationName = "Grimpe" + this.climbingDirection;
+
+			switch(this.climbingDirection)
+			{
+				case "Haut":
+					spriteDirection = this.gestionSprites.getClimbUpSpriteDirection();
+					break;
+				case "Bas":
+					spriteDirection = this.gestionSprites.getClimbDownSpriteDirection();
+					break;
+				case "Droite":
+					spriteDirection = this.gestionSprites.getClimbRightSpriteDirection();
+					break;
+				case "Gauche":
+					spriteDirection = this.gestionSprites.getClimbLeftSpriteDirection();
+					break;
+				case "Idle":
+					spriteDirection = this.gestionSprites.getClimbIdleSpriteDirection();
+					break;
+				default:
+					spriteDirection = this.gestionSprites.getClimbIdleSpriteDirection();
+				break;
+			}
 		}
 		
 

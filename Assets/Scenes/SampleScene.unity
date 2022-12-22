@@ -6703,11 +6703,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744642650}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.42153168, y: 14.935835, z: 0.947412}
-  m_Center: {x: -0.28923416, y: 6.1265097, z: 0.026293993}
+  m_Size: {x: 0, y: 15.25, z: 0.947412}
+  m_Center: {x: 0.04, y: 7.25, z: 0.026293993}
 --- !u!1 &1748065674
 GameObject:
   m_ObjectHideFlags: 0
@@ -7457,6 +7457,7 @@ GameObject:
   - component: {fileID: 1894799014}
   - component: {fileID: 1894799013}
   - component: {fileID: 1894799015}
+  - component: {fileID: 1894799016}
   m_Layer: 0
   m_Name: Joueur
   m_TagString: Player
@@ -7510,12 +7511,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cc: {fileID: 1894799014}
+  origineRayCast: {fileID: 1906236710}
   maCamera: {fileID: 963194229}
+  gestionSprites: {fileID: 1894799016}
   sprite: {fileID: 1011394231}
-  vitesseMarche: 0.05
-  vitesseRun: 0.1
+  vitesseMarche: 5
+  vitesseRun: 15
+  vitesseGrimpe: 5
   animationFrameRate: 15
   nbLandingFrames: 2
+--- !u!143 &1894799014
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894799010}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2.45
+  m_Radius: 0.512
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: -0.03, y: 0.27, z: 0}
+--- !u!114 &1894799015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894799010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f1e0c73130430345bef9e9af594fc8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PointInteraction: {fileID: 34344118}
+  rayonInteraction: 0.5
+--- !u!114 &1894799016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894799010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 498703edb948a7144b3e93f962bd3a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maCamera: {fileID: 963194229}
   listeIdleSpriteN:
   - {fileID: -757790829, guid: 028265391c5a2014ca78e5b83523d846, type: 3}
   listeIdleSpriteNE:
@@ -7560,32 +7609,32 @@ MonoBehaviour:
   - {fileID: -22431359, guid: a560206df9d6e3d4593ac6b72d82f1fd, type: 3}
   - {fileID: 1658108536, guid: a560206df9d6e3d4593ac6b72d82f1fd, type: 3}
   listeWalkSpriteSE:
+  - {fileID: -1653565054, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
+  - {fileID: 721969519, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: 465123575, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: -2056027249, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: -1760531236, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: 1777358905, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: 1715098474, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   - {fileID: 1721875531, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
-  - {fileID: -1653565054, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
-  - {fileID: 721969519, guid: 818a550b0ff6be4459aae12a15720716, type: 3}
   listeWalkSpriteS:
+  - {fileID: -1620421510, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
+  - {fileID: -276396694, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: -1585604635, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: 342444310, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: 790734230, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: -625901186, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: -1063234156, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   - {fileID: 1846441706, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
-  - {fileID: -1620421510, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
-  - {fileID: -276396694, guid: 69d32b8452f3a7244a154bd104d061f2, type: 3}
   listeWalkSpriteSO:
+  - {fileID: -359056905, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
+  - {fileID: -459980566, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: -540903470, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: 1942031479, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: 451624851, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: 1992660928, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: -91306748, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   - {fileID: 1873658753, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
-  - {fileID: -359056905, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
-  - {fileID: -459980566, guid: cb9cb7b3b1a4912449e455c8631328a8, type: 3}
   listeWalkSpriteO:
   - {fileID: -1503571824, guid: 1fa0952c5ff445141b84e2a4cdfc4cd5, type: 3}
   - {fileID: 1137910132, guid: 1fa0952c5ff445141b84e2a4cdfc4cd5, type: 3}
@@ -7708,78 +7757,150 @@ MonoBehaviour:
   - {fileID: -84053855, guid: 12d2afd6e8fe1ca4d887a5747aa6e999, type: 3}
   listeLandSpriteNO:
   - {fileID: -1375970536, guid: 12d2afd6e8fe1ca4d887a5747aa6e999, type: 3}
-  listeClimbSpriteN:
+  listeClimbIdleSpriteN:
+  - {fileID: -1364659300, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  listeClimbIdleSpriteNE:
+  - {fileID: 452732044, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  listeClimbIdleSpriteE:
+  - {fileID: -1555233600, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  listeClimbIdleSpriteSE:
+  - {fileID: 522074395, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  listeClimbIdleSpriteS:
+  - {fileID: -61389655, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  listeClimbIdleSpriteSO:
+  - {fileID: -75629243, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  listeClimbIdleSpriteO:
+  - {fileID: 1864981384, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  listeClimbIdleSpriteNO:
+  - {fileID: 97169828, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  listeClimbUpSpriteN:
   - {fileID: 446009107, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
   - {fileID: -1364659300, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
   - {fileID: 667539784, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
   - {fileID: -1799853429, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
-  listeClimbSpriteNE:
+  listeClimbUpSpriteNE:
   - {fileID: -1696829482, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
   - {fileID: 452732044, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
   - {fileID: 97951101, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
   - {fileID: 1310959804, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
-  listeClimbSpriteE:
+  listeClimbUpSpriteE:
   - {fileID: 569811909, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
   - {fileID: -1555233600, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
   - {fileID: 304071384, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
   - {fileID: -1168116520, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
-  listeClimbSpriteSE:
+  listeClimbUpSpriteSE:
   - {fileID: -1572165330, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
   - {fileID: 522074395, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
   - {fileID: 641421769, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
   - {fileID: 718187931, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
-  listeClimbSpriteS:
+  listeClimbUpSpriteS:
   - {fileID: -1456891997, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
   - {fileID: -61389655, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
   - {fileID: -975093004, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
   - {fileID: -1452556389, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
-  listeClimbSpriteSO:
+  listeClimbUpSpriteSO:
   - {fileID: -194135750, guid: 4763755292302bd418ab134f3a527912, type: 3}
   - {fileID: -75629243, guid: 4763755292302bd418ab134f3a527912, type: 3}
   - {fileID: -1699319453, guid: 4763755292302bd418ab134f3a527912, type: 3}
   - {fileID: -401927217, guid: 4763755292302bd418ab134f3a527912, type: 3}
-  listeClimbSpriteO:
+  listeClimbUpSpriteO:
   - {fileID: 2010926427, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
   - {fileID: 1864981384, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
   - {fileID: -1141936954, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
   - {fileID: 548211454, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
-  listeClimbSpriteNO:
+  listeClimbUpSpriteNO:
   - {fileID: -536853416, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
   - {fileID: 97169828, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
   - {fileID: 745377747, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
   - {fileID: -433977435, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
---- !u!143 &1894799014
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1894799010}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 2.45
-  m_Radius: 0.512
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: -0.03, y: 0.27, z: 0}
---- !u!114 &1894799015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1894799010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f1e0c73130430345bef9e9af594fc8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PointInteraction: {fileID: 34344118}
-  rayonInteraction: 0.5
+  listeClimbDownSpriteN:
+  - {fileID: 446009107, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  - {fileID: -1799853429, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  - {fileID: 667539784, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  - {fileID: -1364659300, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  listeClimbDownSpriteNE:
+  - {fileID: -1696829482, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  - {fileID: 1310959804, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  - {fileID: 97951101, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  - {fileID: 452732044, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  listeClimbDownSpriteE:
+  - {fileID: 569811909, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  - {fileID: -1168116520, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  - {fileID: 304071384, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  - {fileID: -1555233600, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  listeClimbDownSpriteSE:
+  - {fileID: -1572165330, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  - {fileID: 718187931, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  - {fileID: 641421769, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  - {fileID: 522074395, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  listeClimbDownSpriteS:
+  - {fileID: -1456891997, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  - {fileID: -1452556389, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  - {fileID: -975093004, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  - {fileID: -61389655, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  listeClimbDownSpriteSO:
+  - {fileID: -194135750, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  - {fileID: -401927217, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  - {fileID: -1699319453, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  - {fileID: -75629243, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  listeClimbDownSpriteO:
+  - {fileID: 2010926427, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  - {fileID: 548211454, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  - {fileID: -1141936954, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  - {fileID: 1864981384, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  listeClimbDownSpriteNO:
+  - {fileID: -536853416, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  - {fileID: -433977435, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  - {fileID: 745377747, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  - {fileID: 97169828, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  listeClimbRightSpriteN:
+  - {fileID: -1364659300, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  - {fileID: -1799853429, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  listeClimbRightSpriteNE:
+  - {fileID: 452732044, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  - {fileID: 1310959804, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  listeClimbRightSpriteE:
+  - {fileID: -1555233600, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  - {fileID: -1168116520, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  listeClimbRightSpriteSE:
+  - {fileID: 522074395, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  - {fileID: 718187931, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  listeClimbRightSpriteS:
+  - {fileID: -61389655, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  - {fileID: -1452556389, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  listeClimbRightSpriteSO:
+  - {fileID: -75629243, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  - {fileID: -401927217, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  listeClimbRightSpriteO:
+  - {fileID: 1864981384, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  - {fileID: 548211454, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  listeClimbRightSpriteNO:
+  - {fileID: 97169828, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  - {fileID: -433977435, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  listeClimbLeftSpriteN:
+  - {fileID: -1364659300, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  - {fileID: -1799853429, guid: 66a1f41db5b872d4f898f9988ce443ff, type: 3}
+  listeClimbLeftSpriteNE:
+  - {fileID: 452732044, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  - {fileID: 1310959804, guid: f5a637361f385364ea174f119bc4bcdf, type: 3}
+  listeClimbLeftSpriteE:
+  - {fileID: -1555233600, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  - {fileID: -1168116520, guid: 713052a92dc6a7e44a69530da7539229, type: 3}
+  listeClimbLeftSpriteSE:
+  - {fileID: 522074395, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  - {fileID: 718187931, guid: 728b7a16661c07c47a8645566fea198f, type: 3}
+  listeClimbLeftSpriteS:
+  - {fileID: -61389655, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  - {fileID: -1452556389, guid: 5542ab1652190a34da325e03fa94e6bd, type: 3}
+  listeClimbLeftSpriteSO:
+  - {fileID: -75629243, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  - {fileID: -401927217, guid: 4763755292302bd418ab134f3a527912, type: 3}
+  listeClimbLeftSpriteO:
+  - {fileID: 1864981384, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  - {fileID: 548211454, guid: 8dae6131bffbb6c48b671d59bc5f231f, type: 3}
+  listeClimbLeftSpriteNO:
+  - {fileID: 97169828, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
+  - {fileID: -433977435, guid: fffc93167b9ece041afe44e2cd226eb4, type: 3}
 --- !u!1 &1906236709
 GameObject:
   m_ObjectHideFlags: 0
@@ -7804,7 +7925,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1906236709}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.034999996, y: -0.6943723, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
