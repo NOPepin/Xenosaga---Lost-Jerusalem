@@ -9,7 +9,7 @@ public class PlayerScript : MonoBehaviour
 	[SerializeField] scriptCamera maCamera;
 	[SerializeField] GereSprites gestionSprites;
 	[SerializeField] SpriteRenderer sprite;
-	[SerializeField] private float vitesseMarche = 0.3f, vitesseRun = 0.6f, vitesseGrimpe, animationFrameRate;
+	[SerializeField] private float vitesseMarche = 0.3f, vitesseRun = 0.6f, vitesseGrimpe, distanceZoneGrimpe, animationFrameRate;
 	[SerializeField] private int nbLandingFrames;
 
 	private Vector3 playerVelocity, direction;
@@ -35,15 +35,19 @@ public class PlayerScript : MonoBehaviour
 
 		if (!DialogueManager.GetInstance().cutsceneIsPlaying)
 		{
-			// on vérifie si le joueur veux commencer à grimper
-			if (!this.isClimbing && Input.GetButtonDown("Submit") && Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 2f, LayerMask.GetMask("Echelle")))
+			// on vérifie si le joueur veut commencer à grimper
+			if (Input.GetButtonDown("Submit") && Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 1.2f, LayerMask.GetMask("Echelle")))
 			{
-				Debug.DrawRay(this.origineRayCast.position, this.origineRayCast.forward, Color.red, 2f);
 				this.isClimbing = true;
+
+				this.transform.forward = Vector3.Reflect(this.pointGrimpe.normal, this.pointGrimpe.normal);
+
+				this.transform.position += (this.pointGrimpe.point - this.transform.position);
+				this.transform.position -= this.transform.forward * this.distanceZoneGrimpe;
 			}
 
 			// on s'occupe du mouvement
-			if(!this.isClimbing)
+			if (!this.isClimbing)
 			{
 				this.Mouvement();
 
@@ -53,9 +57,9 @@ public class PlayerScript : MonoBehaviour
 					this.isLanding = false;
 				}
 
-				if (this.isGrounded && playerVelocity.y < 0)
+				if (this.isGrounded && this.playerVelocity.y < 0)
 				{
-					playerVelocity.y = 0f;
+					this.playerVelocity.y = 0f;
 				}
 
 				if (this.isGrounded && !this.wasGrounded)
@@ -139,20 +143,18 @@ public class PlayerScript : MonoBehaviour
 			return;
 		}
 
-		if (!Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 2f, LayerMask.GetMask("Echelle")) || Input.GetButtonDown("Cancel"))
+		if (!Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 1.2f, LayerMask.GetMask("Echelle")) || Input.GetButtonDown("Cancel"))
 		{
 			this.isClimbing = false;
 			return;
 		}
 
+		if(this.playerVelocity.y < 0)
+		{
+			this.playerVelocity.y = 0f;
+		}
+
 		this.transform.forward = Vector3.Reflect(this.pointGrimpe.normal, this.pointGrimpe.normal);
-
-		/*Vector3 placementInitialGrimpe = this.pointGrimpe.point;
-		placementInitialGrimpe -= this.transform.forward.normalized;
-		this.transform.position = placementInitialGrimpe;*/
-
-		this.transform.position = this.pointGrimpe.point;
-
 
 		float horizontal = Input.GetAxis("Horizontal");
 		float vertical = Input.GetAxis("Vertical");
@@ -168,7 +170,7 @@ public class PlayerScript : MonoBehaviour
 
 		Vector3 deplacement = (this.transform.up * vertical) + (this.transform.right * horizontal);
 
-		this.cc.Move(deplacement * vitesseGrimpe * Time.deltaTime);
+		this.transform.position += (deplacement * vitesseGrimpe * Time.deltaTime);
 
 		if(vertical > 0)
 		{
