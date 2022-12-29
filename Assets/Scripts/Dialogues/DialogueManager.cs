@@ -28,6 +28,12 @@ public class DialogueManager : MonoBehaviour
 	[SerializeField] private GameObject[] choixPortraitDroit;
 	[SerializeField] private GameObject[] choixPortraitGauche;
 	[SerializeField] private GameObject[] choixSansPortrait;
+
+	[Header("Message UI")]
+	[SerializeField] private TextMeshProUGUI zoneTexteMessage;
+	[SerializeField] private GameObject panelMessage;
+	[SerializeField] private GameObject[] choixMessage;
+
 	private GameObject[] choices;
 	private List<TextMeshProUGUI> choicesText;
 
@@ -62,6 +68,9 @@ public class DialogueManager : MonoBehaviour
 		return instance;
 	}
 
+	/*--------------*/
+	/*---Dialogue---*/
+	/*--------------*/
 	private void Start()
 	{
 		cutsceneIsPlaying = false;
@@ -93,7 +102,7 @@ public class DialogueManager : MonoBehaviour
 		}
 	}
 
-	public void EnterDialogueMode(TextAsset inkJSON, IInteractible source)
+	public void EnterDialogueMode(TextAsset inkJSON, IInteractible source = null)
 	{
 		sourceDuDialogue = source;
 		currentStory = new Story(inkJSON.text);
@@ -106,7 +115,11 @@ public class DialogueManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(0.2f);
 
-		sourceDuDialogue.finInteraction();
+		if (sourceDuDialogue != null)
+		{
+			sourceDuDialogue.finInteraction();
+		}
+
 		cutsceneIsPlaying = false;
 		dialoguePanel.SetActive(false);
 		displayNameText.text = "";
@@ -369,5 +382,20 @@ public class DialogueManager : MonoBehaviour
 	private void gereAnimation(string nomPortrait)
 	{
 		PortraitManager.instance.gereAnimations(nomPortrait, portraitVisage, portraitYeux);
+	}
+
+	/*---------------*/
+	/*----Message----*/
+	/*---------------*/
+
+	private void DisplayMessage(string text, IInteractible source = null, string[] choix = null)
+	{
+		this.sourceDuDialogue = source;
+		this.zoneTexteMessage.SetText(text);
+
+		if(choix != null)
+		{
+			
+		}
 	}
 }
