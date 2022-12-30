@@ -28,6 +28,19 @@ public class StatistiquesPersonnage
 		this.vitesse        = vitesse;
 	}
 
+	public StatistiquesPersonnage(StatistiquesPersonnage stats)
+	{
+		this.pvMax			= stats.pvMax;
+		this.peMax			= stats.peMax;
+		this.attaque        = stats.attaque;
+		this.defense        = stats.defense;
+		this.ether          = stats.ether;
+		this.defenseEther   = stats.defenseEther;
+		this.precision      = stats.precision;
+		this.esquive        = stats.esquive;
+		this.vitesse        = stats.vitesse;
+	}
+
 	public static StatistiquesPersonnage operator +(StatistiquesPersonnage s1, StatistiquesPersonnage s2)
 	{
 		StatistiquesPersonnage sRet = new StatistiquesPersonnage();

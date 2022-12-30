@@ -8,10 +8,11 @@ public class Coffre : MonoBehaviour, IInteractible
 	private List<Item> objetsObtenus = new List<Item>();
 	private List<int> quantite = new List<int>();
 	private int index;
+	private bool aEteOuvert = false;
 
 	public void finInteraction()
 	{
-		if (++index < objetsObtenus.Count)
+		if (++index < objetsObtenus.Count && !aEteOuvert)
 		{
 			MessageCoffre();
 			ObtentionObjet();
@@ -19,27 +20,36 @@ public class Coffre : MonoBehaviour, IInteractible
 		else
 		{
 			GereInteractions.GetInstance().interactionEnCours = false;
+			aEteOuvert = true;
 		}
 	}
 
 	public bool interaction(GereInteractions i)
 	{
-		this.objetsObtenus.Add(new PommeDeTest());
-		this.quantite.Add(2);
-		this.objetsObtenus.Add(new ArmureTest());
-		this.quantite.Add(1);
+		if(!aEteOuvert)
+		{
+			this.objetsObtenus.Add(new PommeDeTest());
+			this.quantite.Add(2);
+			this.objetsObtenus.Add(new ArmureTest());
+			this.quantite.Add(1);
 
-		index = 0;
+			index = 0;
 
-		MessageCoffre();
-		ObtentionObjet();
+			MessageCoffre();
+			ObtentionObjet();
 
-		return true;
+			return true;
+		}
+		else
+		{
+			finInteraction();
+			return false;
+		}
 	}
 
 	private void ObtentionObjet()
 	{
-		DonneesDeJeu.GetInstance().ItemObtenu(this.objetsObtenus.ElementAt(index), this.quantite.ElementAt(index));
+		DonneesDeJeu.ItemObtenu(this.objetsObtenus.ElementAt(index), this.quantite.ElementAt(index));
 	}
 
 	private void MessageCoffre()

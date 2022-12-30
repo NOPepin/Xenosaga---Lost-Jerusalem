@@ -35,49 +35,73 @@ public class PlayerScript : MonoBehaviour
 
 		if (!DialogueManager.GetInstance().cutsceneIsPlaying)
 		{
-			// on vérifie si le joueur veut commencer à grimper
-			if (Input.GetButtonDown("Submit") && Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 1.2f, LayerMask.GetMask("Echelle")))
+			if(Input.GetButtonDown("MenuPause"))
 			{
-				this.isClimbing = true;
-
-				this.transform.forward = Vector3.Reflect(this.pointGrimpe.normal, this.pointGrimpe.normal);
-
-				this.transform.position += (this.pointGrimpe.point - this.transform.position);
-				this.transform.position -= this.transform.forward * this.distanceZoneGrimpe;
+				if(GerePause.instance.estActive)
+				{
+					GerePause.instance.ArretMenuPause();
+				}
+				else
+				{
+					GerePause.instance.DemarageMenuPause();
+				}
 			}
 
-			// on s'occupe du mouvement
-			if (!this.isClimbing)
+			if(GerePause.instance.estActive && Input.GetButtonDown("Cancel"))
 			{
-				this.Mouvement();
+				GerePause.instance.ArretMenuPause();
+			}
 
-				if (!this.isGrounded)
+			if (!GerePause.instance.estActive)
+			{
+				// on vérifie si le joueur veut commencer à grimper
+				if (Input.GetButtonDown("Submit") && Physics.Raycast(this.origineRayCast.position, this.origineRayCast.forward, out this.pointGrimpe, 1.2f, LayerMask.GetMask("Echelle")))
 				{
-					this.wasGrounded = false;
-					this.isLanding = false;
+					this.isClimbing = true;
+
+					this.transform.forward = Vector3.Reflect(this.pointGrimpe.normal, this.pointGrimpe.normal);
+
+					this.transform.position += (this.pointGrimpe.point - this.transform.position);
+					this.transform.position -= this.transform.forward * this.distanceZoneGrimpe;
 				}
 
-				if (this.isGrounded && this.playerVelocity.y < 0)
+				// on s'occupe du mouvement
+				if (!this.isClimbing)
 				{
-					this.playerVelocity.y = 0f;
-				}
+					this.Mouvement();
 
-				if (this.isGrounded && !this.wasGrounded)
+					if (!this.isGrounded)
+					{
+						this.wasGrounded = false;
+						this.isLanding = false;
+					}
+
+					if (this.isGrounded && this.playerVelocity.y < 0)
+					{
+						this.playerVelocity.y = 0f;
+					}
+
+					if (this.isGrounded && !this.wasGrounded)
+					{
+						this.wasGrounded = true;
+						this.isLanding = true;
+					}
+
+					if (Input.GetButtonDown("Jump") && this.isGrounded) { this.Saut(); }
+
+					transform.rotation.eulerAngles.Set(0, transform.rotation.eulerAngles.y, 0);
+
+					playerVelocity.y += gravityValue * Time.deltaTime;
+					cc.Move(playerVelocity * Time.deltaTime);
+				}
+				else
 				{
-					this.wasGrounded = true;
-					this.isLanding = true;
+					this.Grimpe();
 				}
-
-				if (Input.GetButtonDown("Jump") && this.isGrounded) { this.Saut(); }
-
-				transform.rotation.eulerAngles.Set(0, transform.rotation.eulerAngles.y, 0);
-
-				playerVelocity.y += gravityValue * Time.deltaTime;
-				cc.Move(playerVelocity * Time.deltaTime);
 			}
 			else
 			{
-				this.Grimpe();
+				this.direction = Vector3.zero;
 			}
 		}
 		else
@@ -111,7 +135,7 @@ public class PlayerScript : MonoBehaviour
 			this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, directionRotation, 1.5f);
 		}
 
-		isRunning = !Input.GetKey(KeyCode.LeftShift);
+		isRunning = !Input.GetButton("Marche/Course");
 
 		if (isRunning)
 		{
