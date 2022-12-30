@@ -15,7 +15,7 @@ public class PommeDeTest : ItemUtilisable
 		this.utilisableEnCombat = true;
 		this.utilisableHorsCombat = true;
 
-		dialogue = (TextAsset)Resources.Load("Assets/Dialogue/PommeTest.json");
+		dialogue = (TextAsset)Resources.Load("Dialogue/PommeTest");
 	}
 
 	public override void utilisation()

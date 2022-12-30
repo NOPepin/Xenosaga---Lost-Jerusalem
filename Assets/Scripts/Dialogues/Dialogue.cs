@@ -20,5 +20,8 @@ public class Dialogue : MonoBehaviour, IInteractible
 		
 	}
 
-	public void finInteraction() { }
+	public void finInteraction() 
+	{
+		GereInteractions.GetInstance().interactionEnCours = false;
+	}
 }

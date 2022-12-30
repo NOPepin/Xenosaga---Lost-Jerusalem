@@ -43,6 +43,7 @@ public class DialogueManager : MonoBehaviour
 	private bool portraitIsDisplayed = false;
 	private string nomPortrait, nomSpeaker = "";
 	private bool canContinueToNextLine = false;
+	private bool estMessage;
 
 	private IInteractible sourceDuDialogue;
 
@@ -77,6 +78,7 @@ public class DialogueManager : MonoBehaviour
 		panelPortraitDroite.SetActive(false);
 		panelPortraitGauche.SetActive(false);
 		panelSansPortrait.SetActive(false);
+		panelMessage.SetActive(false);
 
 		choicesText = new List<TextMeshProUGUI>();
 	}
@@ -93,7 +95,14 @@ public class DialogueManager : MonoBehaviour
 		// NOTE: The 'currentStory.currentChoiecs.Count == 0' part was to fix a bug after the Youtube video was made
 		if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Submit") && canContinueToNextLine)
 		{
-			ContinueStory();
+			if(estMessage)
+			{
+				ContinueMessage();
+			}
+			else
+			{
+				ContinueStory();
+			}
 		}
 
 		if (portraitIsDisplayed)
@@ -107,6 +116,7 @@ public class DialogueManager : MonoBehaviour
 		sourceDuDialogue = source;
 		currentStory = new Story(inkJSON.text);
 		cutsceneIsPlaying = true;
+		estMessage = false;
 
 		ContinueStory();
 	}
@@ -264,6 +274,11 @@ public class DialogueManager : MonoBehaviour
 		{
 			choiceButton.SetActive(false);
 		}
+
+		foreach (GameObject choiceButton in choixMessage)
+		{
+			choiceButton.SetActive(false);
+		}
 	}
 
 	private IEnumerator SelectFirstChoice()
@@ -388,14 +403,65 @@ public class DialogueManager : MonoBehaviour
 	/*----Message----*/
 	/*---------------*/
 
-	private void DisplayMessage(string text, IInteractible source = null, string[] choix = null)
+	public void DisplayMessage(TextAsset inkJSON = null, Story story = null, IInteractible source = null)
 	{
-		this.sourceDuDialogue = source;
-		this.zoneTexteMessage.SetText(text);
-
-		if(choix != null)
+		sourceDuDialogue = source;
+		if(story == null)
 		{
-			
+			currentStory = new Story(inkJSON.text);
 		}
+		else
+		{
+			currentStory = story;
+		}
+		
+		cutsceneIsPlaying = true;
+		estMessage = true;
+		panelMessage.SetActive(true);
+		choices = choixMessage;
+
+		ContinueMessage();
+	}
+
+	private void ContinueMessage()
+	{
+		if(currentStory.canContinue)
+		{
+			HideChoices();
+			zoneTexteMessage.text = currentStory.Continue();
+			DisplayChoices();
+			canContinueToNextLine = true;
+		}
+		else
+		{
+			StartCoroutine(ExitMessageMode());
+		}
+	}
+
+	private IEnumerator ExitMessageMode()
+	{
+		yield return new WaitForSeconds(0.1f);
+
+		cutsceneIsPlaying = false;
+		panelMessage.SetActive(false);
+
+		yield return new WaitForSeconds(0.1f);
+
+		if (sourceDuDialogue != null)
+		{
+			sourceDuDialogue.finInteraction();
+		}
+	}
+
+	/*---- Messages particuliers ----*/
+
+	public void MessageObjetsObtenus(string nomObjet, int quantite, IInteractible source = null)
+	{
+		Story messageObjet = new Story(Instantiate(Resources.Load<TextAsset>("Dialogue/System/MessageObjetObtenu")).text);
+
+		messageObjet.variablesState.SetGlobal("nomObjetObtenu", Ink.Runtime.StringValue.Create(nomObjet));
+		messageObjet.variablesState.SetGlobal("quantite", Ink.Runtime.Value.Create(quantite));
+
+		DisplayMessage(null, messageObjet, source);
 	}
 }

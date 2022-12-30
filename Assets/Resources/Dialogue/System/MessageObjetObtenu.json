@@ -1,0 +1,1 @@
+﻿{"inkVersion":20,"root":[["^Vous avez obtenu ","ev",{"VAR?":"nomObjetObtenu"},"out","/ev","^×","ev",{"VAR?":"quantite"},"out","/ev","^!","\n",["done",{"#f":5,"#n":"g-0"}],null],"done",{"global decl":["ev","str","^","/str",{"VAR=":"nomObjetObtenu"},0,{"VAR=":"quantite"},"/ev","end",null],"#f":1}],"listDefs":{}}

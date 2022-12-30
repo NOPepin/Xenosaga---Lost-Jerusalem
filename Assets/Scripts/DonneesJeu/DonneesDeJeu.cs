@@ -11,6 +11,8 @@ public class DonneesDeJeu : MonoBehaviour
     [SerializeField] private Dictionary<Item, int> inventaire;
     public int argent { get; set; }
 
+    private static DonneesDeJeu instance;
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,12 @@ public class DonneesDeJeu : MonoBehaviour
 		}
 
         Object.DontDestroyOnLoad(this.gameObject);
+        instance = this;
+	}
+
+    public static DonneesDeJeu GetInstance()
+	{
+        return instance;
 	}
 
     public void ItemObtenu(Item item, int quantite = 1)
