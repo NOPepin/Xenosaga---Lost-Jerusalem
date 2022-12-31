@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GerePause : MonoBehaviour
@@ -15,6 +16,9 @@ public class GerePause : MonoBehaviour
 	[SerializeField] private GameObject menuTech;
 	[SerializeField] private GameObject menuAnima;
 	[SerializeField] private GameObject menuParametres;
+	[SerializeField] private GameObject menuEncyclopedie;
+	[SerializeField] private GameObject menuSauvegarder;
+	[SerializeField] private GameObject menuSelectionPersonnage;
 
 	[SerializeField] private TextMeshProUGUI txtArgent;
 
@@ -69,8 +73,17 @@ public class GerePause : MonoBehaviour
 		equipeActive = DonneesDeJeu.equipeActive;
 		panelPause.SetActive(true);
 		menuRacine.SetActive(true);
+		menuEquipe.SetActive(false);
+		menuInventaire.SetActive(false);
+		menuTalents.SetActive(false);
+		menuTech.SetActive(false);
+		menuAnima.SetActive(false);
+		menuParametres.SetActive(false);
+		menuEncyclopedie.SetActive(false);
+		menuSauvegarder.SetActive(false);
+		menuSelectionPersonnage.SetActive(false);
 
-		for(int i = 0; i<DonneesDeJeu.nbPersonnagesEquipe; i++)
+		for (int i = 0; i<DonneesDeJeu.nbPersonnagesEquipe; i++)
 		{
 			zonesPersonnagesEquipe[i].SetActive(true);
 			txtNomsPersonnages[i].text = equipeActive[i].getNom();
@@ -91,6 +104,53 @@ public class GerePause : MonoBehaviour
 		}
 
 		estActive = true;
+
+		StartCoroutine(SelectFirstChoice());
+	}
+
+	private IEnumerator SelectFirstChoice()
+	{
+		// Event System requires we clear it first, then wait
+		// for at least one frame before we set the current selected object.
+		EventSystem.current.SetSelectedGameObject(null);
+		yield return new WaitForEndOfFrame();
+		EventSystem.current.SetSelectedGameObject(choixMenu[0].gameObject);
+	}
+
+	public void ChoisirMenu(string nomMenu)
+	{
+		switch(nomMenu)
+		{
+			case "equipe":
+				Debug.Log("On passe au menu Équipe ! [pas encore implémenté]");
+				menuRacine.SetActive(false);
+				menuEquipe.SetActive(true);
+				break;
+			case "inventaire":
+				Debug.Log("On passe au menu Inventaire ! [pas encore implémenté]");
+				break;
+			case "talents":
+				Debug.Log("On passe au menu Talents ! [pas encore implémenté]");
+				break;
+			case "techniques":
+				Debug.Log("On passe au menu Techniques ! [pas encore implémenté]");
+				break;
+			case "anima":
+				Debug.Log("On passe au menu Anima ! [pas encore implémenté]");
+				break;
+			case "parametres":
+				Debug.Log("On passe au menu Paramètres ! [pas encore implémenté]");
+				break;
+			case "encyclopedie":
+				Debug.Log("On passe au menu Encyclopédie ! [pas encore implémenté]");
+				break;
+			case "sauvegarder":
+				Debug.Log("On passe au menu Sauvegarder ! [pas encore implémenté]");
+				break;
+			default:
+				Debug.Log("Le menu séléctionné n'existe pas...?");
+				break;
+		}
 	}
 
 	public void ArretMenuPause()

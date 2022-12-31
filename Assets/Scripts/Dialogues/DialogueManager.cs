@@ -279,6 +279,8 @@ public class DialogueManager : MonoBehaviour
 		{
 			choiceButton.SetActive(false);
 		}
+
+		choicesText.Clear();
 	}
 
 	private IEnumerator SelectFirstChoice()
