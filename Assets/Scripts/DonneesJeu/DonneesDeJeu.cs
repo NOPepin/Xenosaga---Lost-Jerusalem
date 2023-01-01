@@ -11,7 +11,8 @@ public class DonneesDeJeu : MonoBehaviour
 	private static Dictionary<Item, int> inventaire;
 	public static int argent { get; set; }
 
-	public static int nbPersonnagesEquipe { get; private set; } = 1;
+	public static int nbPersonnagesEquipeActive { get; private set; } = 1;
+	public static int nbPersonnagesTotal { get; private set; } = 1;
 
 	private Personnage yeshua;
 	private Personnage maria;
@@ -107,6 +108,16 @@ public class DonneesDeJeu : MonoBehaviour
 		{
 			inventaire.Remove(item);
 		}
+	}
+
+	public static int GetQuantite(Item i)
+	{
+		if(!inventaire.TryGetValue(i, out int quantite))
+		{
+			return 0;
+		}
+
+		return quantite;
 	}
 
 	public enum Personnages

@@ -5,7 +5,7 @@ using UnityEngine;
 public class GereSprites : MonoBehaviour
 {
 
-	[SerializeField] scriptCamera maCamera;
+	[SerializeField] ScriptCamera maCamera;
 
 	[SerializeField]
 	List<Sprite> listeIdleSpriteN, listeIdleSpriteNE, listeIdleSpriteE, listeIdleSpriteSE,

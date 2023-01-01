@@ -33,6 +33,7 @@ public class GerePause : MonoBehaviour
 	private Personnage[] equipeActive;
 
 	public bool estActive { get; private set; } = false;
+	public bool sousMenuActif { get; private set; } = false;
 
 	public static GerePause instance { get; private set; }
 
@@ -53,7 +54,7 @@ public class GerePause : MonoBehaviour
 	{
 		if(estActive)
 		{
-			for(int i = 0; i<DonneesDeJeu.nbPersonnagesEquipe; i++)
+			for(int i = 0; i<DonneesDeJeu.nbPersonnagesEquipeActive; i++)
 			{
 				switch (equipeActive[i].getIdPersonnage())
 				{
@@ -70,6 +71,9 @@ public class GerePause : MonoBehaviour
 
 	public void DemarageMenuPause()
 	{
+		sousMenuActif = false;
+		GereMenuEquipe.estActive = false;
+
 		equipeActive = DonneesDeJeu.equipeActive;
 		panelPause.SetActive(true);
 		menuRacine.SetActive(true);
@@ -83,7 +87,7 @@ public class GerePause : MonoBehaviour
 		menuSauvegarder.SetActive(false);
 		menuSelectionPersonnage.SetActive(false);
 
-		for (int i = 0; i<DonneesDeJeu.nbPersonnagesEquipe; i++)
+		for (int i = 0; i<DonneesDeJeu.nbPersonnagesEquipeActive; i++)
 		{
 			zonesPersonnagesEquipe[i].SetActive(true);
 			txtNomsPersonnages[i].text = equipeActive[i].getNom();
@@ -98,7 +102,7 @@ public class GerePause : MonoBehaviour
 
 		txtArgent.text = string.Format("{0,9:D9}G", DonneesDeJeu.argent);
 
-		for(int i = DonneesDeJeu.nbPersonnagesEquipe; i<equipeActive.Length; i++)
+		for(int i = DonneesDeJeu.nbPersonnagesEquipeActive; i<equipeActive.Length; i++)
 		{
 			zonesPersonnagesEquipe[i].SetActive(false);
 		}
@@ -122,9 +126,8 @@ public class GerePause : MonoBehaviour
 		switch(nomMenu)
 		{
 			case "equipe":
-				Debug.Log("On passe au menu Équipe ! [pas encore implémenté]");
-				menuRacine.SetActive(false);
-				menuEquipe.SetActive(true);
+				sousMenuActif = true;
+				GereMenuEquipe.instance.DemarageMenuEquipe();
 				break;
 			case "inventaire":
 				Debug.Log("On passe au menu Inventaire ! [pas encore implémenté]");
@@ -157,5 +160,7 @@ public class GerePause : MonoBehaviour
 	{
 		panelPause.SetActive(false);
 		estActive = false;
+		sousMenuActif = false;
+
 	}
 }

@@ -118,6 +118,11 @@ public class DialogueManager : MonoBehaviour
 		cutsceneIsPlaying = true;
 		estMessage = false;
 
+		if(GerePause.instance.estActive)
+		{
+			GerePause.instance.ArretMenuPause();
+		}
+
 		ContinueStory();
 	}
 

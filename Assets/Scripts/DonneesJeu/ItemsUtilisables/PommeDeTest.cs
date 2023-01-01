@@ -14,6 +14,7 @@ public class PommeDeTest : ItemUtilisable
 		this.valeurVente = 5;
 		this.utilisableEnCombat = true;
 		this.utilisableHorsCombat = true;
+		this.cible = Cible.Allié;
 
 		dialogue = (TextAsset)Resources.Load("Dialogue/PommeTest");
 	}

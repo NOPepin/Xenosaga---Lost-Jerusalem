@@ -6,7 +6,7 @@ public class PlayerScript : MonoBehaviour
 {
 	[SerializeField] CharacterController cc;
 	[SerializeField] Transform origineRayCast;
-	[SerializeField] scriptCamera maCamera;
+	[SerializeField] ScriptCamera maCamera;
 	[SerializeField] GereSprites gestionSprites;
 	[SerializeField] SpriteRenderer sprite;
 	[SerializeField] private float vitesseMarche = 0.3f, vitesseRun = 0.6f, vitesseGrimpe, distanceZoneGrimpe, animationFrameRate;
@@ -50,6 +50,11 @@ public class PlayerScript : MonoBehaviour
 			if(GerePause.instance.estActive && Input.GetButtonDown("Cancel"))
 			{
 				GerePause.instance.ArretMenuPause();
+			}
+
+			if(GerePause.instance.sousMenuActif && Input.GetButtonDown("Cancel"))
+			{
+				GerePause.instance.DemarageMenuPause();
 			}
 
 			if (!GerePause.instance.estActive)
