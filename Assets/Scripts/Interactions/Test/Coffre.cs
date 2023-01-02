@@ -32,6 +32,8 @@ public class Coffre : MonoBehaviour, IInteractible
 			this.quantite.Add(2);
 			this.objetsObtenus.Add(new ArmureTest());
 			this.quantite.Add(1);
+			this.objetsObtenus.Add(new AmeliorationXP(50, 800));
+			this.quantite.Add(18);
 
 			index = 0;
 

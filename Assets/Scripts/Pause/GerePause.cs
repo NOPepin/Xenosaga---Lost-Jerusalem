@@ -130,7 +130,8 @@ public class GerePause : MonoBehaviour
 				GereMenuEquipe.instance.DemarageMenuEquipe();
 				break;
 			case "inventaire":
-				Debug.Log("On passe au menu Inventaire ! [pas encore implémenté]");
+				sousMenuActif = true;
+				GereMenuInventaire.instance.DemarrageMenuInventaire();
 				break;
 			case "talents":
 				Debug.Log("On passe au menu Talents ! [pas encore implémenté]");

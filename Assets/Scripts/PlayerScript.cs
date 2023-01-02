@@ -47,7 +47,7 @@ public class PlayerScript : MonoBehaviour
 				}
 			}
 
-			if(GerePause.instance.estActive && Input.GetButtonDown("Cancel"))
+			if(GerePause.instance.estActive && !GerePause.instance.sousMenuActif && Input.GetButtonDown("Cancel"))
 			{
 				GerePause.instance.ArretMenuPause();
 			}

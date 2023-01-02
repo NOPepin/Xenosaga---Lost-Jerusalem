@@ -120,6 +120,16 @@ public class DonneesDeJeu : MonoBehaviour
 		return quantite;
 	}
 
+	public static List<Item> GetItemsInventaire()
+	{
+		return new List<Item>(inventaire.Keys);
+	}
+
+	public static List<int> GetQuantitesInventaire()
+	{
+		return new List<int>(inventaire.Values);
+	}
+
 	public enum Personnages
 	{
 		Autres,
