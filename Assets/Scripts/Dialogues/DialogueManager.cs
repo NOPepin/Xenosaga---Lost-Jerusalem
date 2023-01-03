@@ -120,7 +120,7 @@ public class DialogueManager : MonoBehaviour
 
 		if(GerePause.instance.estActive)
 		{
-			GerePause.instance.ArretMenuPause();
+			StartCoroutine(GerePause.instance.ArretMenuPause());
 		}
 
 		ContinueStory();

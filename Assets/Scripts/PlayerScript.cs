@@ -39,7 +39,7 @@ public class PlayerScript : MonoBehaviour
 			{
 				if(GerePause.instance.estActive)
 				{
-					GerePause.instance.ArretMenuPause();
+					StartCoroutine(GerePause.instance.ArretMenuPause());
 				}
 				else
 				{
@@ -49,10 +49,10 @@ public class PlayerScript : MonoBehaviour
 
 			if(GerePause.instance.estActive && !GerePause.instance.sousMenuActif && Input.GetButtonDown("Cancel"))
 			{
-				GerePause.instance.ArretMenuPause();
+				StartCoroutine(GerePause.instance.ArretMenuPause());
 			}
 
-			if(GerePause.instance.sousMenuActif && Input.GetButtonDown("Cancel"))
+			if (GerePause.instance.sousMenuActif && Input.GetButtonDown("Cancel"))
 			{
 				GerePause.instance.DemarageMenuPause();
 			}

@@ -74,6 +74,8 @@ public class GerePause : MonoBehaviour
 		sousMenuActif = false;
 		GereMenuEquipe.estActive = false;
 
+		if(GereMenuInventaire.estActive) { GereMenuInventaire.instance.FermerMenuInventaire(); }
+
 		equipeActive = DonneesDeJeu.equipeActive;
 		panelPause.SetActive(true);
 		menuRacine.SetActive(true);
@@ -157,8 +159,9 @@ public class GerePause : MonoBehaviour
 		}
 	}
 
-	public void ArretMenuPause()
+	public IEnumerator ArretMenuPause()
 	{
+		yield return new WaitForSeconds(0.1f);
 		panelPause.SetActive(false);
 		estActive = false;
 		sousMenuActif = false;

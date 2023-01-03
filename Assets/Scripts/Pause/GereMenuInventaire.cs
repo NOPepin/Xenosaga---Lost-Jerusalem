@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 {
 	[SerializeField] private GameObject menuRacine;
 	[SerializeField] private GameObject menuInventaire;
 	[SerializeField] private GameObject prefabItem;
+	[SerializeField] private GameObject prefabCaseVide;
 	[SerializeField] private GameObject contenuScrollViewInventaire;
 
 	[SerializeField] private TextMeshProUGUI txtDescription;
@@ -17,9 +19,10 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 	[SerializeField] private TextMeshProUGUI txtDescriptionCible;
 	[SerializeField] private TextMeshProUGUI txtDescriptionContexteUtilisation;
 
-	private List<Item>			inventaire = new List<Item>();
-	private List<int>			quantite = new List<int>();
-	private List<GameObject>	casesUIItem = new List<GameObject>();
+	private List<Item>			inventaire		= new List<Item>();
+	private List<int>			quantite		= new List<int>();
+	private List<GameObject>	casesUIItem		= new List<GameObject>();
+	private List<GameObject>	casesUIvides	= new List<GameObject>();
 
 	private Item itemSelectionne, itemSelectionnePrecedent = null;
 
@@ -67,7 +70,9 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 
 		for (int i = casesUIItem.Count; i < 3; i++)
 		{
-			Instantiate(new GameObject(), contenuScrollViewInventaire.transform);
+			GameObject tmp;
+			tmp = Instantiate(prefabCaseVide, contenuScrollViewInventaire.transform);
+			casesUIvides.Add(tmp);
 		}
 
 		StartCoroutine(SelectFirstChoice());
@@ -92,6 +97,8 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 		int index = casesUIItem.IndexOf(eventData.selectedObject);
 
 		itemSelectionne = inventaire[index];
+
+		Debug.Log(itemSelectionne != itemSelectionnePrecedent);
 
 		if(itemSelectionne != itemSelectionnePrecedent)
 		{
@@ -167,5 +174,20 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 				}
 			}
 		}
+	}
+
+	public void FermerMenuInventaire()
+	{
+		foreach(GameObject caseUI in casesUIItem)
+		{
+			Object.Destroy(caseUI);
+		}
+		casesUIItem.Clear();
+
+		foreach(GameObject caseVide in casesUIvides)
+		{
+			Object.Destroy(caseVide);
+		}
+		casesUIvides.Clear();
 	}
 }
