@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5060619067663836169}
   - component: {fileID: 5083255757203337411}
+  - component: {fileID: -1637765833212975037}
   m_Layer: 0
   m_Name: UIItemMenuInventaire
   m_TagString: Untagged
@@ -84,6 +85,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!222 &-1637765833212975037
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198077067283479568}
+  m_CullTransparentMesh: 1
 --- !u!1 &3422507852061557309
 GameObject:
   m_ObjectHideFlags: 0

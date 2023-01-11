@@ -10689,7 +10689,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0.00012207031, y: 0}
-  m_SizeDelta: {x: 200, y: 60}
+  m_SizeDelta: {x: 780, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &477360135
 MonoBehaviour:
@@ -33007,6 +33007,7 @@ MonoBehaviour:
   menuRacine: {fileID: 1411002050}
   menuInventaire: {fileID: 836361980}
   prefabItem: {fileID: 1198077067283479568, guid: a3fb78294dc95804da0546acbf751fec, type: 3}
+  prefabCaseVide: {fileID: 3200307949830980778, guid: b3dbe4dcce019314e8a42311a04eba8f, type: 3}
   contenuScrollViewInventaire: {fileID: 885003205}
   txtDescription: {fileID: 1341113746}
   txtDescriptionNomObjet: {fileID: 477360135}

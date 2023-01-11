@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -39,20 +40,29 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 		instance = this;
 	}
 
-	private void Update()
+	private void LateUpdate()
 	{
-		if(EventSystem.current.currentSelectedGameObject == null)
+		if(estActive)
 		{
-			txtDescription.text = "";
-			txtDescriptionNomObjet.text = "";
-			txtDescriptionQuantite.text = "";
-			txtDescriptionCible.text = "";
-			txtDescriptionContexteUtilisation.text = "";
+			if (EventSystem.current.currentSelectedGameObject == null)
+			{
+				txtDescription.text = "";
+				txtDescriptionNomObjet.text = "";
+				txtDescriptionQuantite.text = "";
+				txtDescriptionCible.text = "";
+				txtDescriptionContexteUtilisation.text = "";
+			}
+			else if(itemSelectionnePrecedent != inventaire[casesUIItem.IndexOf(EventSystem.current.currentSelectedGameObject)])
+			{
+				AfficherDescription(EventSystem.current.currentSelectedGameObject);
+			}
 		}
+		
 	}
 
 	public void DemarrageMenuInventaire()
 	{
+		EventSystem.current.SetSelectedGameObject(null);
 		menuRacine.SetActive(false);
 		menuInventaire.SetActive(true);
 
@@ -92,25 +102,43 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 		estActive = true;
 	}
 
-	public void OnSelect(BaseEventData eventData)
+	#region test
+	public void AfficherDescription(GameObject maCase)
 	{
-		int index = casesUIItem.IndexOf(eventData.selectedObject);
-
+		int index = casesUIItem.IndexOf(maCase);
 		itemSelectionne = inventaire[index];
 
-		Debug.Log(itemSelectionne != itemSelectionnePrecedent);
-
-		if(itemSelectionne != itemSelectionnePrecedent)
+		if (itemSelectionne != itemSelectionnePrecedent)
 		{
 			txtDescriptionNomObjet.text = itemSelectionne.getNom();
 			txtDescriptionQuantite.text = string.Format("× {0,2:D2}", quantite[index]);
 			txtDescription.text = itemSelectionne.getDescription();
 
-			if(itemSelectionne.GetType() == typeof(ItemUtilisable))
+			ItemUtilisable tmpUtilisable = null;
+			Equipement tmpEquipement = null;
+
+			try
 			{
-				ItemUtilisable tmp = (ItemUtilisable)itemSelectionne;
+				tmpUtilisable = (ItemUtilisable)itemSelectionne;
+			}
+			catch (InvalidCastException e)
+			{
+				//Debug.LogError(e);
+			}
+
+			try
+			{
+				tmpEquipement = (Equipement)itemSelectionne;
+			}
+			catch (InvalidCastException e)
+			{
+				//Debug.LogError(e);
+			}
+
+			if (tmpUtilisable != null)
+			{
 				string texteCible;
-				switch (tmp.GetCible())
+				switch (tmpUtilisable.GetCible())
 				{
 					case ItemUtilisable.Cible.Allié:
 						texteCible = "1 Allié";
@@ -140,31 +168,32 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 
 				txtDescriptionCible.text = texteCible;
 
-				if(tmp.EstUtilisableEnCombat() && tmp.EstUtilisableHorsCombat())
+				if (tmpUtilisable.EstUtilisableEnCombat() && tmpUtilisable.EstUtilisableHorsCombat())
 				{
 					txtDescriptionContexteUtilisation.text = "";
 				}
 				else
 				{
-					if(tmp.EstUtilisableEnCombat())
+					if (tmpUtilisable.EstUtilisableEnCombat())
 					{
 						txtDescriptionContexteUtilisation.text = "En combat seulement";
 					}
-
-					if(tmp.EstUtilisableHorsCombat())
+					else if (tmpUtilisable.EstUtilisableHorsCombat())
 					{
 						txtDescriptionContexteUtilisation.text = "Hors combat seulement";
 					}
-
-					txtDescriptionContexteUtilisation.text = "Inutilisable";
+					else
+					{
+						txtDescriptionContexteUtilisation.text = "Inutilisable";
+					}
 				}
 
 			}
 			else
 			{
 				txtDescriptionCible.text = "";
-				
-				if(itemSelectionne.GetType() == typeof(Equipement))
+
+				if (tmpEquipement != null)
 				{
 					txtDescriptionContexteUtilisation.text = "Equipement";
 				}
@@ -175,19 +204,127 @@ public class GereMenuInventaire : MonoBehaviour, ISelectHandler
 			}
 		}
 	}
+	#endregion test
+	#region onSelect
+	public void OnSelect(BaseEventData eventData)
+	{
+		int index = casesUIItem.IndexOf(eventData.selectedObject);
+
+		itemSelectionne = inventaire[index];
+
+		Debug.Log(itemSelectionne != itemSelectionnePrecedent);
+
+		if(itemSelectionne != itemSelectionnePrecedent)
+		{
+			txtDescriptionNomObjet.text = itemSelectionne.getNom();
+			txtDescriptionQuantite.text = string.Format("× {0,2:D2}", quantite[index]);
+			txtDescription.text = itemSelectionne.getDescription();
+
+			ItemUtilisable tmpUtilisable = null;
+			Equipement     tmpEquipement = null;
+
+			try
+			{
+				tmpUtilisable = (ItemUtilisable)itemSelectionne;
+			}
+			catch (InvalidCastException e)
+			{
+				//Debug.LogError(e);
+			}
+
+			try
+			{
+				tmpEquipement = (Equipement)itemSelectionne;
+			}
+			catch (InvalidCastException e)
+			{
+				//Debug.LogError(e);
+			}
+
+			if (tmpUtilisable != null)
+			{
+				string texteCible;
+				switch (tmpUtilisable.GetCible())
+				{
+					case ItemUtilisable.Cible.Allié:
+						texteCible = "1 Allié";
+						break;
+					case ItemUtilisable.Cible.Alliés:
+						texteCible = "Tous les Alliés";
+						break;
+					case ItemUtilisable.Cible.Ennemi:
+						texteCible = "1 Ennemi";
+						break;
+					case ItemUtilisable.Cible.Ennemis:
+						texteCible = "Tous les Ennemis";
+						break;
+					case ItemUtilisable.Cible.Tous:
+						texteCible = "Tout le monde";
+						break;
+					case ItemUtilisable.Cible.NImporte:
+						texteCible = "N'importe qui";
+						break;
+					case ItemUtilisable.Cible.Aucune:
+						texteCible = "";
+						break;
+					default:
+						texteCible = "???";
+						break;
+				}
+
+				txtDescriptionCible.text = texteCible;
+
+				if(tmpUtilisable.EstUtilisableEnCombat() && tmpUtilisable.EstUtilisableHorsCombat())
+				{
+					txtDescriptionContexteUtilisation.text = "";
+				}
+				else
+				{
+					if(tmpUtilisable.EstUtilisableEnCombat())
+					{
+						txtDescriptionContexteUtilisation.text = "En combat seulement";
+					}else if(tmpUtilisable.EstUtilisableHorsCombat())
+					{
+						txtDescriptionContexteUtilisation.text = "Hors combat seulement";
+					}
+					else
+					{
+						txtDescriptionContexteUtilisation.text = "Inutilisable";
+					}
+				}
+
+			}
+			else
+			{
+				txtDescriptionCible.text = "";
+				
+				if(tmpEquipement != null)
+				{
+					txtDescriptionContexteUtilisation.text = "Equipement";
+				}
+				else
+				{
+					txtDescriptionContexteUtilisation.text = "Inutilisable";
+				}
+			}
+		}
+	}
+	#endregion onSelect
 
 	public void FermerMenuInventaire()
 	{
 		foreach(GameObject caseUI in casesUIItem)
 		{
-			Object.Destroy(caseUI);
+			UnityEngine.Object.Destroy(caseUI);
 		}
 		casesUIItem.Clear();
 
 		foreach(GameObject caseVide in casesUIvides)
 		{
-			Object.Destroy(caseVide);
+			UnityEngine.Object.Destroy(caseVide);
 		}
 		casesUIvides.Clear();
+
+		estActive = false;
 	}
 }
